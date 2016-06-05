@@ -78,14 +78,14 @@ ggplot(data, aes(select, md_earn_wne_p10)) +
 ```
 
 
-It is clear that incoming student ability, as measured by average SAT scores of accepted students, seems to have a bigger effect on earnings than selectivity through non-SAT considerations. In fact, in the data as a whole, SAT scores seems to have a linear relationship with future earnings (Figure 3). The Pearson correlation for this positive relationship is r = 0.624. 
+It is clear that incoming student ability, as measured by average SAT scores of accepted students, seems to have a bigger effect on earnings than selectivity through non-SAT considerations. In fact, in the data as a whole, SAT scores seems to have a linear relationship with future earnings (Figure 4). The Pearson correlation for this positive relationship is r = 0.624. 
 
 ```{r, echo=FALSE, warning=FALSE}
 ggplot(Scorecard_Current, aes(SAT_AVG, md_earn_wne_p10)) +
   geom_point(size=0.5) + ylim(0, 125000) + 
   xlab("Average SAT Score") + 
   ylab("Median 10-Year Earnings") + 
-  ggtitle("Figure 3 \nSAT Score vs Earnings") + 
+  ggtitle("Figure 4 \nSAT Score vs Earnings") + 
   stat_smooth(method = lm)  +
   theme(plot.title = element_text(hjust = 0))
 
@@ -105,13 +105,13 @@ Evaluating the adjusted R squared value for each model and examining each parame
 Median Earnings ~ Average SAT Score + Faculty Salary + Cost of Tuition
 with an $R^2 = 0.576$
 
-To validate the linear model, I then made predictions of median earnings using the linear regression model against the test set. Figure 4 shows the plot of Observed Earnings vs. Predicted Earnings for the test data. 
+To validate the linear model, I then made predictions of median earnings using the linear regression model against the test set. Figure 5 shows the plot of Observed Earnings vs. Predicted Earnings for the test data. 
 
 ```{r, echo=FALSE, warning=FALSE}
 load("test.Rda")
 ggplot(test, aes(predicted_earn, md_earn_wne_p10)) + 
   geom_point(size=1.0) + xlim(20000, 75000) + ylim(20000, 75000) +
-  ggtitle("Figure 4 \nSAT Score, Faculty Salary, and Cost of Tuition \nPredicts Future Earnings in Test Set") +
+  ggtitle("Figure 5 \nSAT Score, Faculty Salary, and Cost of Tuition \nPredicts Future Earnings in Test Set") +
   xlab("Predicted Earnings ($)") +
   ylab("Actual Earnings ($)") +
   stat_smooth(method=lm) +
