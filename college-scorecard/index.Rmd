@@ -1,5 +1,5 @@
 ---
-title: "College Scorecard"
+title: "College Scorecard: Initial Exploration"
 author: "Keith Hultman"
 date: "June 4, 2016"
 runtime: shiny
