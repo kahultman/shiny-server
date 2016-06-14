@@ -14,7 +14,7 @@ library(dplyr)
 
 load("scorecard.Rda")
 
-pcip_abv <- c("allPCIP", "PCIP01", "PCIP03", "PCIP04", "PCIP05", "PCIP09", "PCIP10", "PCIP11", "PCIP12", "PCIP13", "PCIP14", "PCIP15", "PCIP16", "PCIP19", "PCIP22", "PCIP23", "PCIP24", "PCIP25", "PCIP26", "PCIP27", "PCIP29", "PCIP30", "PCIP31", "PCIP38", "PCIP39", "PCIP40", "PCIP41", "PCIP42", "PCIP43", "PCIP44", "PCIP45", "PCIP46", "PCIP47", "PCIP48", "PCIP49", "PCIP50", "PCIP51", "PCIP52", "PCIP54")
+pcip_abr <- c("allPCIP", "PCIP01", "PCIP03", "PCIP04", "PCIP05", "PCIP09", "PCIP10", "PCIP11", "PCIP12", "PCIP13", "PCIP14", "PCIP15", "PCIP16", "PCIP19", "PCIP22", "PCIP23", "PCIP24", "PCIP25", "PCIP26", "PCIP27", "PCIP29", "PCIP30", "PCIP31", "PCIP38", "PCIP39", "PCIP40", "PCIP41", "PCIP42", "PCIP43", "PCIP44", "PCIP45", "PCIP46", "PCIP47", "PCIP48", "PCIP49", "PCIP50", "PCIP51", "PCIP52", "PCIP54")
 pcip_full <- c("All", "Agriculture, Agriculture Operations, and Related Sciences", "Natural Resources and Conservation", "Architecture and Related Services", "Area, Ethnic, Cultural, Gender, and Group Studies", "Communication, Journalism, and Related Programs", "Communications Technologies/Technicians and Support Services", "Computer and Information Sciences and Support Services", "Personal and Culinary Services", "Education", "Engineering", "Engineering Technologies and Engineering-Related Fields", "Foreign Languages, Literatures, and Linguistics", "Family and Consumer Sciences/Human Sciences", "Legal Professions and Studies", "English Language and Literature/Letters", "Liberal Arts and Sciences, General Studies and Humanities", "Library Science", "Biological and Biomedical Sciences", "Mathematics and Statistics", "Military Technologies and Applied Sciences", "Multi/Interdisciplinary Studies", "Parks, Recreation, Leisure, and Fitness Studies", "Philosophy and Religious Studies", "Theology and Religious Vocations", "Physical Sciences", "Science Technologies/Technicians", "Psychology", "Homeland Security, Law Enforcement, Firefighting and Related Protective Services", "Public Administration and Social Service Professions", "Social Sciences", "Construction Trades", "Mechanic and Repair Technologies/Technicians", "Precision Production", "Transportation and Materials Moving", "Visual and Performing Arts", "Health Professions and Related Programs", "Business, Management, Marketing, and Related Support Services", "History")
 
 xaxis_abr <- c("ADM_RATE", "SATVRMID", "SATMTMID", "SATWRMID", "UGDS", "COSTT4_A", "COSTT4_P", "AVGFACSAL", "PFTFAC")
@@ -35,8 +35,8 @@ ui <- shinyUI(fluidPage(
         
         selectInput("field",
                     "Choose colleges with field of study:",
-                    choices = pcip_abv,
-                    selected = "PCIP01"),
+                    choices = pcip_abr,
+                    selected = "allPCIP"),
         
         selectInput("x.axis",
                      "Choose the x-axis:",
@@ -51,7 +51,6 @@ ui <- shinyUI(fluidPage(
       
       
       mainPanel(
-         h3(textOutput("Earnings Plot")),
          plotOutput("earnplot")
       )
    )
@@ -59,19 +58,21 @@ ui <- shinyUI(fluidPage(
 
 
 server <- shinyServer(function(input, output) {
-  
-  colleges <- reactive({
-    fields <- input$field
-    scorecard %>%  filter(fields > 0.0)
+    
+  colleges <- reactive(function(){
+    if(input$field == "allPCIP"){
+      scorecard
+    }else{
+      scorecard %>% filter(scorecard[,eval(input$field)] > 0.0)
+    }
   })
    
-  
-   output$earnplot <- renderPlot({
+  output$earnplot <- renderPlot({
       # generate plot
-      #xvar <- get(input$x.axis)
-      #yvar <- get(input$y.axis)
-      ggplot(scorecard, mapping = aes(input$x.axis, input$y.axis)) + 
+      p <- ggplot(colleges(), mapping = aes_string(x = input$x.axis, y = input$y.axis)) + 
        geom_point()
+    
+      print(p)
    })
 })
 
